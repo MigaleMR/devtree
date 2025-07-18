@@ -33,6 +33,7 @@
     "@types/express": "^5.0.3",
     "@types/formidable": "^3.4.5",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.0.14",
     "@types/slug": "^5.0.9",
     "nodemon": "^3.1.10"
   }
