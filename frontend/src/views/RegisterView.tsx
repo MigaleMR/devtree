@@ -1,4 +1,4 @@
-import { data, Link } from "react-router-dom";
+import { data, Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
@@ -7,10 +7,12 @@ import ErrorMessage from "../components/ErrorMessage";
 import api from "../config/axios";
 
 export default function RegisterView() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const initialValues: RegisterForm = {
     name: "",
     email: "",
-    handle: "",
+    handle: location?.state?.handle || "",
     password: "",
     password_confirmation: "",
   };
@@ -28,6 +30,7 @@ export default function RegisterView() {
       const { data } = await api.post(`/auth/register`, formData);
       toast(data);
       reset();
+      navigate("/auth/login");
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.error);
@@ -148,7 +151,7 @@ export default function RegisterView() {
 
       <nav className="mt-10">
         <Link className="text-center text-white text-lg block" to="/auth/login">
-          Ya tienes cuenta? Inicia sesion aquí
+          Ya tienes cuenta? <p className="text-cyan-300 text-bold">Inicia sesion aquí</p>
         </Link>
       </nav>
     </>

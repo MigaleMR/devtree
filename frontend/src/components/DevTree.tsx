@@ -1,13 +1,15 @@
 import { Link, Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
-import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
   arrayMove,
 } from "@dnd-kit/sortable";
 import NavigationTabs from "./NavigationTabs";
-import { SocialNetwork, User } from "../types";
+import type { SocialNetwork } from "../types";
+import type { User } from "../types";
 import { useEffect, useState } from "react";
 import DevTreeLink from "./DevTreeLink";
 import { useQueryClient } from "@tanstack/react-query";

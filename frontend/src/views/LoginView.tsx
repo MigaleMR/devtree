@@ -1,12 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../components/ErrorMessage";
 import type { LoginForm } from "../types";
 import api from "../config/axios";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
+import { useState } from "react"; // Agrega useState
 
 export default function LoginView() {
+  const navigate = useNavigate()
+  const [authError, setAuthError] = useState(""); // Estado para error de autenticación
   const initialValues: LoginForm = {
     email: "",
     password: "",
@@ -18,12 +21,21 @@ export default function LoginView() {
   } = useForm({ defaultValues: initialValues });
 
   const handleLogin = async (formData: LoginForm) => {
+    setAuthError(""); // Limpia el error antes de intentar login
     try {
       const { data } = await api.post(`/auth/login`, formData);
       localStorage.setItem("AUTH_TOKEN", data);
+      navigate('/admin')
     } catch (error) {
       if (isAxiosError(error) && error.response) {
-        toast.error(error.response.data.error);
+        let mensaje = "Error de autenticación";
+        if (error.response.data.errors && error.response.data.errors.length > 0) {
+          mensaje = error.response.data.errors[0].msg;
+        } else if (error.response.data.error) {
+          mensaje = error.response.data.error;
+        }
+        setAuthError(mensaje);
+        toast.error(mensaje);
       }
     }
   };
@@ -68,9 +80,7 @@ export default function LoginView() {
               required: "El Password es obligatorio",
             })}
           />
-          {errors.password && (
-            <ErrorMessage>{errors.password.message}</ErrorMessage>
-          )}
+          {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
         </div>
 
         <input
@@ -85,7 +95,7 @@ export default function LoginView() {
           className="text-center text-white text-lg block"
           to="/auth/register"
         >
-          No tienes cuenta? Crea una aquí
+          No tienes cuenta?<p className="text-cyan-300 text-bold">Crea una aquí</p> 
         </Link>
       </nav>
     </>
